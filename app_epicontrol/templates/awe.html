@@ -1,0 +1,9 @@
+<ul>
+    {% for c in colaboradores %}
+        <li>
+            {{ c.nome_completo }} - {{ c.cargo }} - {{ c.matricula }}
+        </li>
+    {% empty %}
+        <li>Nenhum colaborador cadastrado</li>
+    {% endfor %}
+</ul>

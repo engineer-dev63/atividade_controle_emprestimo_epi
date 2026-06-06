@@ -1,8 +1,7 @@
-from django.shortcuts import render
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import Colaborador
+from .bd_improvisado import inserir_colaborador, listar_colaboradores,pesquisar_colaborador, editar_colaborador, deletar_colaborador
+
 # Create your views here.
 from django.http import HttpResponse
 
@@ -20,25 +19,51 @@ def equipamentos(request):
 
 
 
-# funcao de cadstrar usuarios------------------------------
 
+
+def colaboradores(request):
+    lista = listar_colaboradores()
+
+    # PESQUISA
+    if request.method == "GET":
+        busca = request.GET.get("busca")
+        if busca:
+            lista = pesquisar_colaborador(busca)
+
+    return render(request, 'app_epicontrol/colaboradores.html', {
+        "colaboradores": lista
+    })
+
+
+# CREATE
 def cadastrar_usuario(request):
     if request.method == 'POST':
-        # 1. Captura os dados do HTML
         nome = request.POST.get('nome')
         cargo = request.POST.get('cargo')
         matricula = request.POST.get('matricula')
 
-        # 2. Validação simples: checa se o usuário já existe no Banco de Dados
-        # if User.objects.filter(matricula=nome).exists():
-        #     messages.error(request, "Esta matricula já pretence a outro colaborador.")
-        #     return render(request, 'colaboradores.html')
-        
-        # 3. Cria e salva o usuário no banco com a matricula criptografada
-        User.objects.create_user(nome=nome, cargo=cargo, matricula=matricula)
-        
-        # 4. Redireciona para a tela de login após o sucesso
-        messages.success(request, "Usuário cadastrado com sucesso!")
-        # return redirect('') # Nome da rota da sua view de login
-        
-    return render(request, 'colaboradores.html')
+        inserir_colaborador(nome, cargo, matricula)
+
+    return redirect('colaboradores')
+
+
+
+
+# UPDATE
+def editar_usuario(request, id):
+    if request.method == 'POST':
+        nome = request.POST.get('nome')
+        cargo = request.POST.get('cargo')
+        matricula = request.POST.get('matricula')
+
+        editar_colaborador(id, nome, cargo, matricula)
+
+    return redirect('colaboradores')
+
+
+
+def excluir_colaborador(request, id):
+    if request.method == "POST":
+        deletar_colaborador(id)
+
+    return redirect("colaboradores")

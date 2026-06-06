@@ -23,9 +23,19 @@ from . import views
 urlpatterns = [
     path('' , views.home),
     path('base/' , views.home),
+    path('', views.colaboradores, name='colaboradores'),    
+    
+
+    path('cadastrar/', views.cadastrar_usuario, name='cadastrar_usuario'),
+    path('excluir/<int:id>/', views.excluir_colaborador, name='excluir_colaborador'),
+    path('editar/<int:id>/', views.editar_usuario, name='editar_usuario'),
+
+
+
     path('colaboradores.html' , views.colaboradores),
     path('emprestimos.html' , views.emprestimos),
     path('equipamentos.html' , views.equipamentos),
     path('cadastrar_usuario/' , views.cadastrar_usuario, name='cadastrar_usuario'),
+
 ]
 
